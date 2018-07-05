@@ -19,49 +19,22 @@ namespace BInary_Academy_DataStructure
 
         public int GetCountCommentsByUserId(int id)
         {
-            int sum = 0;
-            User user = users.Find(x => x.id == id);
-            if (user != null)
-                user.posts.ForEach(post => sum += post.comments.Count);
-
-            return sum;
+            return users.Where(x => x.id == id).SelectMany(user => user.posts).Sum(post => post.comments.Count);
         }
 
         public List<Comment> GetCommentsByUserId(int id)
         {
-            List<Comment> commentsWithLenghtLess50 = new List<Comment>();
-
-            User user = users.Find(x => x.id == id);
-            if (user != null)
-                user.posts.ForEach(post => post.comments.ForEach(
-                        comment => { if (comment.body.Length < 50) commentsWithLenghtLess50.Add(comment); }
-                    ));
-
-            return commentsWithLenghtLess50;
+            return users.Where(user => user.id == id).SelectMany(user => user.posts).SelectMany(post => post.comments).Where(comment => comment.body.Length < 50).ToList();
         }
 
         public List<Todo> GetDoneTodosByUserId(int id)
         {
-            List<Todo> result = new List<Todo>();
-            User user = users.Find(x => x.id == id);
-            if (user != null)
-                user.todos.ForEach(todo =>
-                {
-                    if (todo.isComplete)
-                    {
-                        result.Add(new Todo() { id = todo.id, name = todo.name, isComplete = todo.isComplete });
-                    }
-                });
-
-            return result;
+            return users.Where(user => user.id == id).SelectMany(user => user.todos).Where(todo => todo.isComplete == true).ToList();
         }
 
         public List<User> GetOrderedListOfUsers()
         {
-            List<User> orderedUsers = users.OrderBy(user => user.name).ToList();
-            orderedUsers.ForEach(user => user.todos = user.todos.OrderByDescending(todo => todo.name.Length).ToList());
-
-            return orderedUsers;
+            return users.OrderBy(user => user.name).Select(user => new User() { id = user.id, name = user.name, todos = user.todos.OrderByDescending(todo => todo.name.Length).ToList() }).ToList();
         }
 
         public FirstModel GetInfoAboutUserById(int id)
@@ -101,14 +74,14 @@ namespace BInary_Academy_DataStructure
         public SecondModel GetInfoAboutPostById(int id)
         {
             SecondModel secondModel = new SecondModel();
-
+            //users.FirstOrDefault(user => user.id == id);
             users.ForEach(user =>
             {
                 if (user.posts.FirstOrDefault(post => post.id == id) != null)
                     secondModel.postById = user.posts.Find(post => post.id == id);
             });
 
-            if(secondModel.postById != null)
+            if (secondModel.postById != null)
             {
                 secondModel.postById.comments.ForEach(comment =>
                 {
@@ -128,7 +101,7 @@ namespace BInary_Academy_DataStructure
                         secondModel.countComment++;
                 });
             }
-               
+
             return secondModel;
         }
     }

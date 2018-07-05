@@ -22,10 +22,16 @@ namespace BInary_Academy_DataStructure
 
         public override string ToString()
         {
-            string s = $"postById: {postById}\n\n" +
-                $"commentWithMaxLenght: {commentWithMaxLenght}\n\n" +
-                $"commentWithMaxCountLikes: {commentWithMaxCountLikes}\n\n" +
-                $"countComment: {countComment}\n";
+            string s = $"postById: {postById}\n\n";
+
+            if (commentWithMaxLenght.id == 0)
+                s += $"commentWithMaxLenght: - \n\n";
+            else s += $"commentWithMaxLenght: {commentWithMaxLenght}\n\n";
+
+            if (commentWithMaxCountLikes.id == 0)
+                s += $"commentWithMaxCountLikes: - \n\n";
+            else s += $"commentWithMaxCountLikes: {commentWithMaxCountLikes}\n\n";
+            s += $"countComment: {countComment}\n";
 
             return s;
         }

@@ -73,7 +73,8 @@ namespace BInary_Academy_DataStructure
             {
                 firstModel.userById.posts.ForEach(post => { if (firstModel.lastPost.createdAt < post.createdAt) { firstModel.lastPost = post; } });
 
-                firstModel.countCommentsLastPost = firstModel.lastPost.comments.Count;
+                if (firstModel.lastPost.comments != null)
+                    firstModel.countCommentsLastPost = firstModel.lastPost.comments.Count;
 
                 firstModel.countTaskNotDone = firstModel.userById.todos.Where(todo => !todo.isComplete).Count();
 
